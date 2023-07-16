@@ -1,2 +1,2 @@
 # hello-world
-McDaniel College assignments in ANA 505 course of Prof. Lissitz
+## I am the student of Data Analytics program at McDaniel College
