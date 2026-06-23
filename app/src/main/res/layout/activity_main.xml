@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Music Visualizer"
+                android:textColor="@color/text_primary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/statusIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status: Stopped"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Preview mini-visualizer -->
+        <com.musicvisualizer.MusicVisualizerView
+            android:id="@+id/previewVisualizer"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginBottom="28dp"
+            android:background="@color/surface_dark" />
+
+        <!-- Theme selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visualization Style"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerTheme"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/spinner_bg"
+            android:padding="8dp"
+            android:layout_marginBottom="28dp" />
+
+        <!-- Opacity control -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Overlay Opacity"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:letterSpacing="0.1" />
+
+            <TextView
+                android:id="@+id/tvOpacityValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="85%"
+                android:textColor="@color/accent"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/sliderOpacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="20"
+            android:valueTo="100"
+            android:value="85"
+            android:stepSize="5"
+            app:thumbColor="@color/accent"
+            app:trackColorActive="@color/accent"
+            app:trackColorInactive="@color/surface_dark"
+            android:layout_marginBottom="36dp" />
+
+        <!-- Info box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/info_box_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="28dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How it works"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Start the visualizer below\n2. Open YouTube Music\n3. Play any song\n\nThe overlay will display reactive animations on top of YouTube Music. Grant mic permission for real audio analysis, or it runs in demo mode.\n\nFor track info, enable Notification Access in system settings."
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
+                android:lineSpacingMultiplier="1.5" />
+        </LinearLayout>
+
+        <!-- Start/Stop button -->
+        <Button
+            android:id="@+id/btnToggleOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Start Visualizer"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@color/accent_green"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Permissions button -->
+        <Button
+            android:id="@+id/btnPermissions"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Check Permissions"
+            android:textSize="14sp"
+            android:backgroundTint="@color/surface_dark"
+            android:textColor="@color/text_secondary"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    </LinearLayout>
+</ScrollView>
