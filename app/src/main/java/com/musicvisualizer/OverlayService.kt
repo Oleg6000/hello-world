@@ -2,13 +2,11 @@ package com.musicvisualizer
 
 import android.app.*
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
 import android.view.*
 import android.widget.*
-import androidx.core.app.NotificationCompat
 
 class OverlayService : Service() {
 
@@ -50,20 +48,15 @@ class OverlayService : Service() {
             when (it.action) {
                 ACTION_UPDATE_THEME -> {
                     val themeName = it.getStringExtra(EXTRA_THEME) ?: return@let
-                    val theme = VisualizationTheme.valueOf(themeName)
-                    visualizerView.theme = theme
+                    visualizerView.theme = VisualizationTheme.valueOf(themeName)
                 }
                 ACTION_UPDATE_OPACITY -> {
-                    val opacity = it.getFloatExtra(EXTRA_OPACITY, 0.85f)
-                    overlayView.alpha = opacity
+                    overlayView.alpha = it.getFloatExtra(EXTRA_OPACITY, 0.85f)
                 }
                 else -> {
                     val themeName = it.getStringExtra(EXTRA_THEME)
-                    if (themeName != null) {
-                        visualizerView.theme = VisualizationTheme.valueOf(themeName)
-                    }
-                    val opacity = it.getFloatExtra(EXTRA_OPACITY, 0.85f)
-                    overlayView.alpha = opacity
+                    if (themeName != null) visualizerView.theme = VisualizationTheme.valueOf(themeName)
+                    overlayView.alpha = it.getFloatExtra(EXTRA_OPACITY, 0.85f)
                 }
             }
         }
@@ -76,8 +69,7 @@ class OverlayService : Service() {
         visualizerView = overlayView.findViewById(R.id.visualizerView)
         trackInfoText = overlayView.findViewById(R.id.trackInfoText)
 
-        val closeBtn = overlayView.findViewById<ImageButton>(R.id.btnClose)
-        closeBtn.setOnClickListener { stopSelf() }
+        overlayView.findViewById<ImageButton>(R.id.btnClose).setOnClickListener { stopSelf() }
 
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -98,17 +90,7 @@ class OverlayService : Service() {
             gravity = Gravity.TOP or Gravity.START
         }
 
-        // Allow touch on close button but pass through otherwise
-        setupTouchPassthrough(overlayView, closeBtn)
-
         windowManager.addView(overlayView, params)
-    }
-
-    private fun setupTouchPassthrough(rootView: View, closeBtn: ImageButton) {
-        rootView.setOnTouchListener { v, event ->
-            // Only consume touch if on the close button area
-            false
-        }
     }
 
     private fun startVisualization() {
@@ -121,11 +103,11 @@ class OverlayService : Service() {
 
         audioAnalyzer.onDataUpdate = {
             visualizerView.post {
-                visualizerView.waveform = audioAnalyzer.waveform
-                visualizerView.magnitude = audioAnalyzer.magnitude
-                visualizerView.beatEnergy = audioAnalyzer.beatEnergy
-                visualizerView.bassEnergy = audioAnalyzer.bassEnergy
-                visualizerView.midEnergy = audioAnalyzer.midEnergy
+                visualizerView.waveform    = audioAnalyzer.waveform
+                visualizerView.magnitude   = audioAnalyzer.magnitude
+                visualizerView.beatEnergy  = audioAnalyzer.beatEnergy
+                visualizerView.bassEnergy  = audioAnalyzer.bassEnergy
+                visualizerView.midEnergy   = audioAnalyzer.midEnergy
                 visualizerView.trebleEnergy = audioAnalyzer.trebleEnergy
                 updateTrackInfo()
             }
@@ -135,18 +117,13 @@ class OverlayService : Service() {
     private fun updateTrackInfo() {
         val track = mediaSessionHelper.getCurrentTrack()
         trackInfoText?.text = if (track != null && (track.title != null || track.artist != null)) {
-            val playing = if (track.isPlaying) "▶ " else "⏸ "
-            "$playing${track.title ?: "Unknown"} — ${track.artist ?: ""}"
-        } else {
-            ""
-        }
+            "${if (track.isPlaying) "▶ " else "⏸ "}${track.title ?: "Unknown"} — ${track.artist ?: ""}"
+        } else ""
     }
 
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            CHANNEL_ID,
-            "Music Visualizer",
-            NotificationManager.IMPORTANCE_LOW
+            CHANNEL_ID, "Music Imagined", NotificationManager.IMPORTANCE_LOW
         ).apply {
             description = "Running music visualizer overlay"
             setSound(null, null)
@@ -155,22 +132,23 @@ class OverlayService : Service() {
     }
 
     private fun buildNotification(): Notification {
-        val stopIntent = Intent(this, OverlayService::class.java).apply { action = "STOP" }
         val stopPending = PendingIntent.getService(
-            this, 0, stopIntent,
+            this, 0,
+            Intent(this, OverlayService::class.java).apply { action = "STOP" },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val openIntent = PendingIntent.getActivity(
+        val openPending = PendingIntent.getActivity(
             this, 0,
             Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Music Visualizer Active")
-            .setContentText("Tap to open settings")
+        return Notification.Builder(this, CHANNEL_ID)
+            .setContentTitle("Music Imagined")
+            .setContentText("Visualizer running — tap to open settings")
             .setSmallIcon(android.R.drawable.ic_media_play)
-            .setContentIntent(openIntent)
-            .addAction(android.R.drawable.ic_delete, "Stop", stopPending)
+            .setContentIntent(openPending)
+            .addAction(Notification.Action.Builder(
+                null, "Stop", stopPending).build())
             .setOngoing(true)
             .build()
     }

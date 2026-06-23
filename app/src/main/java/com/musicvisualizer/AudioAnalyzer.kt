@@ -113,6 +113,8 @@ class AudioAnalyzer {
         }
     }
 
+    fun startSyntheticModePublic() = startSyntheticMode()
+
     private fun startSyntheticMode() {
         isCapturing = true
         Thread {

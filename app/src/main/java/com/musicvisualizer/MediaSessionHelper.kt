@@ -40,15 +40,5 @@ class MediaSessionHelper(private val context: Context) {
         }
     }
 
-    fun getActiveAudioSessionId(): Int {
-        return try {
-            val listenerComponent = ComponentName(context, NotificationListenerService::class.java)
-            val controllers: List<MediaController> = sessionManager.getActiveSessions(listenerComponent)
-            val ytMusic = controllers.firstOrNull { it.packageName == "com.google.android.apps.youtube.music" }
-                ?: controllers.firstOrNull()
-            ytMusic?.audioSessionId ?: 0
-        } catch (e: Exception) {
-            0
-        }
-    }
+    fun getActiveAudioSessionId(): Int = 0 // MediaController doesn't expose audio session ID
 }
